@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { Component } from 'react';
 
@@ -7,41 +6,37 @@ import { Component } from 'react';
 class App extends Component {
   //para aproximar classes das funcoes
     state = {
-      name: 'Joao Luiz',
-      counter: 0
+      posts: [
+        {
+          id: 1,
+          title: 'titulo 1',
+          body: 'corpo 1'
+        },
+        {
+          id: 2,
+          title: 'titulo 2',
+          body: 'corpo 2'
+        },
+        {
+          id: 3,
+          title: 'titulo 3',
+          body: 'corpo 3'
+        }
+      ]
     };
 
-  handlePClick = () => {
-    this.setState( { name: 'Beatryz' })
-  }
-
-  //arrow function puxa do proprio elemento pai
-  handleAClick = (event) => {
-    event.preventDefault();
-    const { counter } = this.state;
-    this.setState({ counter: counter + 1 })
-  }
-
   render() {
-    const { name, counter } = this.state;
+    const { posts } = this.state;
 
     return(
       <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p onClick={this.handlePClick}>
-          {name} {counter}
-        </p>
-        <a
-          onClick={this.handleAClick}
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Este é o link
-        </a>
-      </header>
+        {/* retornando os objetos da array */}
+        {posts.map(post => (
+        <>
+        <h1 key={post.id}>{post.title}</h1>
+        <p>{post.body}</p>
+        </>
+        ))}
     </div>
     )
   }
