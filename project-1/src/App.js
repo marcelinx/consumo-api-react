@@ -1,33 +1,24 @@
 import './App.css';
+
 import { Component } from 'react';
-import PostCard from './components';
+
+import { loadPosts } from './utils/load-posts'
+import { Posts } from './components/Posts';
 
 //componente de classe stateless
 class App extends Component {
   //para aproximar classes das funcoes
     state = {
-      posts: [],
-      photos: []
+      posts: []
     };
 
     //trazendo uma api e a convertendo em JSON
-    componentDidMount() {
-      this.loadPosts()
+    async componentDidMount() {
+      await this.loadPosts()
     }
 
     loadPosts = async () => {
-      const postReponse = fetch('https://jsonplaceholder.typicode.com/posts')
-      const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos')
-
-      const [ posts, photos ] = await Promise.all([postReponse, photosResponse])
-      
-      const postJson = await posts.json()
-      const photosJson = await photos.json()
-
-      const postsAndPhotos = postJson.map((post, index) => {
-        return { ...post, cover: photosJson[index].url }
-      })
-      
+      const postsAndPhotos = await loadPosts()
       this.setState({ posts: postsAndPhotos})
 
     }
@@ -37,18 +28,7 @@ class App extends Component {
 
     return(
       <section className='container'>
-        <div className="posts">
-        {posts.map(post => (
-          <PostCard 
-          key={post.id}
-          title={post.title}
-          body={post.body}
-          id={post.id}
-          cover={post.cover}
-          post={post}
-          />
-        ))}
-    </div>
+        <Posts posts={posts}/>
       </section>
     )
   }
