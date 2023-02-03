@@ -5,64 +5,51 @@ import { Component } from 'react';
 class App extends Component {
   //para aproximar classes das funcoes
     state = {
-      counter: 0,
-      posts: [
-        {
-          id: 1,
-          title: 'titulo 1',
-          body: 'corpo 1'
-        },
-        {
-          id: 2,
-          title: 'titulo 2',
-          body: 'corpo 2'
-        },
-        {
-          id: 3,
-          title: 'titulo 3',
-          body: 'corpo 3'
-        },
-      ]
+      posts: [],
+      photos: []
     };
-    timeoutUpdate = null;
 
-    //metodo do tipo render
-    //com tempo para minhas informacoes aparecem, 5 segundos
+    //trazendo uma api e a convertendo em JSON
     componentDidMount() {
-      this.handleTimeout()
+      this.loadPosts()
     }
 
-    componentDidUpdate() {
-      this.handleTimeout()
-    }
+    loadPosts = async () => {
+      const postReponse = fetch('https://jsonplaceholder.typicode.com/posts')
+      const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos')
 
-    componentWillUnmount() {
-      clearTimeout(this.timeoutUpdate)
-    }
+      const [ posts, photos ] = await Promise.all([postReponse, photosResponse])
+      
+      const postJson = await posts.json()
+      const photosJson = await photos.json()
 
-    handleTimeout = () => {
-      const { posts, counter } = this.state;
-      posts[0].title = 'o titulo mudou';
+      const postsAndPhotos = postJson.map((post, index) => {
+        return { ...post, cover: photosJson[index].url }
+      })
+      
+      this.setState({ posts: postsAndPhotos})
 
-     this.timeoutUpdate = setTimeout(() => {
-        this.setState({ posts, counter: counter + 1 })
-     }, 1000)
     }
 
   render() {
-    const { posts, counter } = this.state;
-    
+    const { posts } = this.state;
+
     return(
-      <div className="App">
-        <h1>{ counter }</h1>
+      <section className='container'>
+        <div className="posts">
         {/* retornando os objetos da array */}
         {posts.map(post => (
-        <>
-        <h1 key={post.id}>{post.title}</h1>
+        <div className='post'>
+        <img src={post.cover} alt={post.title} />
+        <div key={post.id}
+        className='post-content'>
+        <h1>{post.title}</h1>
         <p>{post.body}</p>
-        </>
+        </div>
+        </div>
         ))}
     </div>
+      </section>
     )
   }
 }
