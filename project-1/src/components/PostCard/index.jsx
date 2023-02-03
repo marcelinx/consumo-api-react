@@ -1,3 +1,5 @@
+ import './styles.css'
+ 
  const PostCard = ({title, cover, body, id}) => {
 
     return(
