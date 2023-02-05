@@ -5,6 +5,7 @@ import './styles.css';
 import { Posts } from '../../components/Posts';
 import { loadPosts } from '../../utils/load-posts'
 import { Button } from '../../components/Button';
+import { TextInput } from '../../components/TextInput';
 
 
 //componente de classe stateless
@@ -15,7 +16,9 @@ class Home extends Component {
       allPosts: [],
       //fazendo a paginacao dos posts
       page: 0,
-      postPerPage: 2
+      postPerPage: 2,
+      //realizando pesquisas
+      searchValue: ''
     };
 
     //trazendo uma api e a convertendo em JSON
@@ -23,6 +26,7 @@ class Home extends Component {
       await this.loadPosts()
     }
 
+    // modulo para carregar posts com arrow function
     loadPosts = async () => {
       const { page, postPerPage } = this.state;
 
@@ -34,6 +38,7 @@ class Home extends Component {
 
     }
 
+    // funcao para carregar posts
     loadMorePosts = () => {
       const {
         page,
@@ -49,23 +54,56 @@ class Home extends Component {
       this.setState({ posts, page: nextPage})
     } 
 
+    //funcao de mundanca enquanto pesquisa
+    handleChange = (e) => {
+      const { value } = e.target;
+      this.setState({ searchValue: value })
+    }
+
   render() {
-    const { posts, page, postPerPage, allPosts } = this.state;
+    const { posts, page, postPerPage, allPosts, searchValue } = this.state;
     const noMorePost = page + postPerPage > allPosts.length;
+
+    // retornando os posts filtrados
+    const filteredPosts = !!posts ? 
+    allPosts.filter(post => {
+      return post.title.toLowerCase().includes(
+        searchValue.toLowerCase()
+        );
+    })
+    : posts;
 
     return(
       <section className='container'>
-        <Posts posts={posts}/>
+        {/* criando pesquisas para buscar palavras em site */}
+      <div className="search-container">
+      {!!searchValue && (
+        <h1>Valor de pesquisa: {searchValue} </h1>
+      )}
+        <TextInput searchValue ={searchValue} handleChange={this.handleChange}/>
+        </div>
+
+
+        {/* usando todos os posts filtrados em POSTS */}
+        {filteredPosts.length > 0 && (
+        <Posts posts={filteredPosts}/>
+        )}
+
+        {filteredPosts.length === 0 && (
+        <p>Nao existem posts</p>
+        )}
+
 
         <div className="button-container">
+
+        {!searchValue && (
         <Button 
         text="Load more post"
         onClick={this.loadMorePosts}
         disabled={noMorePost}
-        />
+          />
+        )}
         </div>
-
-    
       </section>
     )
   }
