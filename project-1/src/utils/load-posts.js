@@ -1,5 +1,6 @@
  export const loadPosts = async () => {
 
+  //api fetch, para trazer os conteudos em index
     const postReponse = fetch('https://jsonplaceholder.typicode.com/posts')
     const photosResponse = fetch('https://jsonplaceholder.typicode.com/photos')
     
