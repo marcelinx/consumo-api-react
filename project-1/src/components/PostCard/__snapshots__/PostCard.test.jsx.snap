@@ -20,3 +20,19 @@ exports[`<PostCard /> should march snapshot 1`] = `
   </div>
 </div>
 `;
+
+exports[`<PostCard /> should match snapshot 1`] = `
+<div
+  class="post"
+>
+  <img />
+  <div
+    class="post-content"
+  >
+    <h2>
+       
+    </h2>
+    <p />
+  </div>
+</div>
+`;
